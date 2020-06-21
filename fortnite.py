@@ -1704,5 +1704,7 @@ if (data['email'] and data['password']) and (data['email'] != "" and data['passw
         client.run()
     except fortnitepy.errors.AuthException as e:
         print(Fore.RED + ' [ERROR] ' + Fore.RESET + f'{e}')
+    except ModuleNotFoundError:
+        print(Fore.RED + " [ERROR] " + Fore.RESET + "Missing 1 or more packages. Run 'Install Packages.bat'")
 else:
     print(Fore.RED + ' [ERROR] ' + Fore.RESET + 'Can not log in, as no accounts credentials were provided.')
