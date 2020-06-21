@@ -8,11 +8,10 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+You will need Python 3.6 or higher for this bot to run.
 
-```
-<a href="https://www.python.org/downloads/release/python-360/">Python 3.6+</a>
-```
+> [Python 3.6+](https://www.python.org/downloads/release/python-360/")
+
 
 ### Installing
 
@@ -20,39 +19,31 @@ A step by step series of examples that tell you how to get a development env run
 
 Step 1.
 
-```
-"Clone or Download" the repository
-```
+> "Clone or Download" the repository
+
 
 Step 2.
 
-```
-Extract the files to your PC
-```
+> Extract the files to your PC
+
 
 Step 3.
 
-```
-Run "Install Packages.bat" and wait for it to finish.
-```
+> Run "Install Packages.bat" and wait for it to finish.
 
 Step 4.
 
-```
-Open "config.json" and fill out the bot's information. (<a href="https://www.github.com/KaosDrip/Xensis/wiki/config_guide>Guide</a>)
-```
+> Open "config.json" and fill out the bot's information. ([Guide](https://www.github.com/KaosDrip/Xensis/wiki/config_guide))
 
 Step 5.
 
-```
-Run "START BOT.bat"
-```
+> Run "START BOT.bat"
+
 
 Step 6.
 
-```
-Enjoy the bot! For a full list of commands, check out the [Command Wiki](https://www.github.com/KaosDrip/Xensis/wiki/commands)
-```
+> Enjoy the bot! For a full list of commands, check out the [Command Wiki](https://www.github.com/KaosDrip/Xensis/wiki/commands)
+
 
 ## Deployment
 
