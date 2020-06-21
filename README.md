@@ -2,6 +2,8 @@
 
 An expansive Fortnite lobby bot with a handful of features.
 
+> Discord server: <a href="https://discord.gg/88r2ShB" target="_blank">Xensis Bots</a>
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -52,6 +54,8 @@ Step 7.
 ## Deployment
 
 If it prompts for an authorization code, get the code from <a href="https://github.com/KaosDrip/Xensis/wiki/Authorization-Code" target="_blank">here</a>
+
+If you have any other issues / questions, feel free to join our <a href="https://discord.gg/88r2ShB" target="_blank">Discord server</a> or check out the <a href="https://github.com/KaosDrip/Xensis/wiki/FAQ" target="_blank">FAQ</a>
 
 ## Acknowledgments
 
