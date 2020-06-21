@@ -37,7 +37,7 @@ Step 4.
 
 Step 5.
 
-> Open "config.json" and fill out the bot's information. (<a href="https://www.github.com/KaosDrip/Xensis/wiki/config_guide" target="_blank">Guide</a>)
+> Open "config.json" and fill out the bot's information. (<a href="https://github.com/KaosDrip/Xensis/wiki/Config-Guide" target="_blank">Guide</a>)
 
 Step 6.
 
@@ -46,12 +46,12 @@ Step 6.
 
 Step 7.
 
-> Enjoy the bot! For a full list of commands, check out the <a href="https://www.github.com/KaosDrip/Xensis/wiki/commands" target="_blank">Command Wiki</a>
+> Enjoy the bot! For a full list of commands, check out the <a href="https://github.com/KaosDrip/Xensis/wiki/Commands" target="_blank">Command Wiki</a>
 
 
 ## Deployment
 
-If it prompts for an authorization code, get the code from <a href="https://www.github.com/KaosDrip/Xensis/wiki/auth_code" target="_blank">here</a>
+If it prompts for an authorization code, get the code from <a href="https://github.com/KaosDrip/Xensis/wiki/Authorization-Code" target="_blank">here</a>
 
 ## Acknowledgments
 
