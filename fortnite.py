@@ -512,8 +512,7 @@ async def eid(ctx, *, content):
     if content is None:
         await ctx.send(f'No emote was given, try: {prefix}eid (emote name)')
     elif content.lower() == 'floss':
-        await client.party.me.set_emote(asset='EID_Floss')
-        await ctx.send(f'Emote set to: Floss')
+        await ctx.send(f'The EID for Floss is: EID_Floss')
     else:
         try:
             cosmetic = await BenBotAsync.get_cosmetic(
@@ -1133,6 +1132,7 @@ async def unhide(ctx):
 
 
 @client.command()
+@is_admin
 async def avatar(ctx, *, skin = None):
     if skin is None:
         await ctx.send(f'No skin was given. Try: {prefix}avatar (skin name, cid)')
@@ -1572,6 +1572,7 @@ async def members(ctx):
 
 
 @client.command()
+@is_admin()
 async def id(ctx, *, user = None):
     if user is not None:
         user = await client.fetch_profile(user)
@@ -1587,6 +1588,7 @@ async def id(ctx, *, user = None):
 
 
 @client.command()
+@is_admin()
 async def user(ctx, *, user = None):
     if user is not None:
         user = await client.fetch_profile(user)
