@@ -266,7 +266,7 @@ async def event_friend_message(message):
             await message.reply(f'Playlist set to: {message.content}')
         except fortnitepy.Forbidden:
             await message.reply(f"I can not set gamemode because I am not party leader.")
-    elif 'prefix' in message.content.upper():
+    elif message.content.upper().startswith('prefix'):
         await message.reply(f'Current prefix: {prefix}')
 
 
