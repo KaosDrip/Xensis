@@ -1,4 +1,3 @@
-![Xensis Logo](https://cdn.discordapp.com/attachments/562347079419297822/723377459260555344/Comp_1_2.gif)
 # Xensis
 
 An expansive Fortnite lobby bot with a handful of features.
