@@ -1169,7 +1169,7 @@ async def unhide(ctx):
 
 @commands.dm_only()
 @client.command()
-@is_admin
+@is_admin()
 async def avatar(ctx, *, skin = None):
     if skin is None:
         await ctx.send(f'No skin was given. Try: {prefix}avatar (skin name, cid)')
