@@ -260,13 +260,13 @@ async def event_friend_message(message):
     elif message.content.upper().startswith('PID_'):
         await client.party.me.set_pickaxe(asset=message.content.upper())
         await message.reply(f'Pickaxe set to: {message.content}')
-    elif message.content.upper().startswith('Playlist_'):
+    elif message.content.startswith('Playlist_'):
         try:
-            await client.party.set_playlist(playlist=message.content.upper())
+            await client.party.set_playlist(playlist=message.content)
             await message.reply(f'Playlist set to: {message.content}')
         except fortnitepy.Forbidden:
             await message.reply(f"I can not set gamemode because I am not party leader.")
-    elif message.content.upper().startswith('prefix'):
+    elif message.content.lower().startswith('prefix'):
         await message.reply(f'Current prefix: {prefix}')
 
 
