@@ -37,6 +37,11 @@ intro = Fore.LIGHTRED_EX + """
 
 print(intro)
 
+response = requests.get("https://benbotfn.tk/api/v1/status")
+patch = response.json()["currentFortniteVersion"]
+
+print(f'\n A free lobbybot network, created by KaosDrip. Fixed by Aspect#0002 for Patch {patch}.\n')
+
 def lenPartyMembers():
     members = client.party.members
     return len(members)
@@ -111,7 +116,6 @@ def is_admin():
         return ctx.author.id in info['FullAccess']
     return commands.check(predicate)
 
-
 device_auth_details = get_device_auth_details().get(data['email'], {})
 
 prefix = '!'
@@ -129,18 +133,10 @@ client = commands.Bot(
     status=data['status'],
     platform=fortnitepy.Platform(data['platform']),
 )
-
-
-@client.event
-async def event_device_auth_generate(details, email):
-    store_device_auth_details(email, details)
+client.party_build_id = "1:3:"
 
 @client.event
 async def event_ready():
-    os.system('cls||clear')
-    print(intro)
-    print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Client ready as ' + Fore.LIGHTGREEN_EX + f'{client.user.display_name}')
-    
     member = client.party.me
 
     await member.edit_and_keep(
@@ -187,6 +183,19 @@ async def event_party_invite(invite):
         else:
             print(Fore.GREEN + ' [+] ' + Fore.RESET + f'Never accepted party invite from {invite.sender.display_name}')
 
+@commands.dm_only()
+@client.command()
+async def pinkghoul(ctx):
+    skin_variants = client.party.me.create_variants(
+        material=3
+    )
+
+    await client.party.me.set_outfit(
+        asset='CID_029_Athena_Commando_F_Halloween',
+        variants=skin_variants
+    )
+
+    await ctx.send('Skin set to Pink Ghoul Trooper!')
 
 @client.event
 async def event_friend_request(request):
@@ -283,8 +292,7 @@ async def event_command_error(ctx, error):
     elif isinstance(error, TimeoutError):
         await ctx.send("You took too long to respond!")
     else:
-        print(error)
-
+        print(error)                  
 
 @commands.dm_only()
 @client.command()
@@ -669,32 +677,6 @@ async def checkeredrenegade(ctx):
 
 @commands.dm_only()
 @client.command()
-async def pinkghoul(ctx):
-    variants = client.party.me.create_variants(material=3)
-
-    await client.party.me.set_outfit(
-        asset='CID_029_Athena_Commando_F_Halloween',
-        variants=variants
-    )
-
-    await ctx.send('Skin set to: Pink Ghoul Trooper')
-
-
-@commands.dm_only()
-@client.command()
-async def purpleskull(ctx):
-    variants = client.party.me.create_variants(clothing_color=1)
-
-    await client.party.me.set_outfit(
-        asset='CID_030_Athena_Commando_M_Halloween',
-        variants = variants
-    )
-
-    await ctx.send('Skin set to: Purple Skull Trooper')
-
-
-@commands.dm_only()
-@client.command()
 async def purpleportal(ctx):
     variants = client.party.me.create_variants(
         item='AthenaBackpack',
@@ -709,6 +691,19 @@ async def purpleportal(ctx):
 
     await ctx.send('Backpack set to: Purple Ghost Portal')
 
+@commands.dm_only()
+@client.command()
+async def purpleskull(ctx):
+    variants = client.party.me.create_variants(
+        clothing_color=1
+    )
+
+    await client.party.me.set_outfit(
+        asset='CID_030_Athena_Commando_M_Halloween',
+        variants=variants
+    )
+
+    await ctx.send('Skin set to Purple Skull Trooper!')
 
 @commands.dm_only()
 @client.command()
@@ -942,77 +937,46 @@ async def copy(ctx, *, username = None):
     global copied_player
 
     if username is None:
-        user = await client.fetch_profile(ctx.message.author.id)
-        member = client.party.members.get(user.id)
+        member = [m for m in client.party.members if m.id == ctx.author.id][0]
 
-    elif 'stop' in username:
-        copied_player = ""
-        await ctx.send(f'Stopped copying all users.')
-        return
+    else:
+        user = await client.fetch_user(username)
+        member = [m for m in client.party.members if m.id == user.id][0]
 
-    elif username is not None:
-        try:
-            user = await client.fetch_profile(username)
-            member = client.party.members.get(user.id)
-        except AttributeError:
-            await ctx.send("Could not get that user.")
-            return
-    try:
-        copied_player = member
-
-        await client.party.me.edit_and_keep(
-                partial(
-                    fortnitepy.ClientPartyMember.set_outfit,
-                    asset=member.outfit,
-                    variants=member.outfit_variants
-                ),
-                partial(
-                    fortnitepy.ClientPartyMember.set_backpack,
-                    asset=member.backpack,
-                    variants=member.backpack_variants
-                ),
-                partial(
-                    fortnitepy.ClientPartyMember.set_pickaxe,
-                    asset=member.pickaxe,
-                    variants=member.pickaxe_variants
-                ),
-                partial(
-                    fortnitepy.ClientPartyMember.set_banner,
-                    icon=member.banner[0],
-                    color=member.banner[1],
-                    season_level=member.banner[2]
-                ),
-                partial(
-                    fortnitepy.ClientPartyMember.set_battlepass_info,
-                    has_purchased=member.battlepass_info[0],
-                    level=member.battlepass_info[1]
-                )
-            )
-
-        await ctx.send(f"Now copying: {member.display_name}")
-    except AttributeError:
-        await ctx.send("Could not get that user.")
-
-@client.event()
-async def event_party_member_outfit_change(member, before, after):
-    if member == copied_player:
-        await client.party.me.edit_and_keep(
+    await client.party.me.edit_and_keep(
             partial(
                 fortnitepy.ClientPartyMember.set_outfit,
-                asset=after,
+                asset=member.outfit,
                 variants=member.outfit_variants
+            ),
+            partial(
+                fortnitepy.ClientPartyMember.set_backpack,
+                asset=member.backpack,
+                variants=member.backpack_variants
+            ),
+            partial(
+                fortnitepy.ClientPartyMember.set_pickaxe,
+                asset=member.pickaxe,
+                variants=member.pickaxe_variants
+            ),
+            partial(
+                fortnitepy.ClientPartyMember.set_banner,
+                icon=member.banner[0],
+                color=member.banner[1],
+                season_level=member.banner[2]
+            ),
+            partial(
+                fortnitepy.ClientPartyMember.set_battlepass_info,
+                has_purchased=member.battlepass_info[0],
+                level=member.battlepass_info[1]
+            ),
+            partial(
+                fortnitepy.ClientPartyMember.set_emote,
+                asset=member.emote
             )
         )
 
-@client.event()
-async def event_party_member_outfit_variants_change(member, before, after):
-    if member == copied_player:
-        await client.party.me.edit_and_keep(
-            partial(
-                fortnitepy.ClientPartyMember.set_outfit,
-                variants=member.outfit_variants
-            )
-        )
+    await ctx.send(f"Now copying: {member.display_name}")
 
 @client.event()
 async def event_party_member_backpack_change(member, before, after):
@@ -1154,10 +1118,10 @@ async def hide(ctx, *, user = None):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def unhide(ctx):
+async def unhide(ctx: fortnitepy.ext.commands.Context, *, username = None):
     if client.party.me.leader:
-        user = await client.fetch_profile(ctx.message.author.id)
-        member = client.party.members.get(user.id)
+        user = await client.fetch_user(ctx.author.display_name)
+        member = client.party.get_member(user.id)
 
         await member.promote()
 
@@ -1280,12 +1244,9 @@ async def match(ctx, players = None):
 @client.command()
 @is_admin()
 async def status(ctx, *, status = None):
-    if status is not None:
-        await client.set_status(status)
-        await ctx.send(f'Set status to: {status}')
-        print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Changed status to: ' + Fore.LIGHTBLACK_EX + f'{status}')
-    else:
-        await ctx.send(f'No status was given. Try: {prefix}status (status message)')
+    await client.set_presence(status) 
+    await ctx.send(f'Status set to {status}')
+    await ctx.send(f'No status was given. Try: {prefix}status (status message)')
 
 
 @commands.dm_only()
@@ -1299,47 +1260,31 @@ async def leave(ctx):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def kick(ctx, *, member = None):
-    if member is not None:
-        if member.lower() == 'all':
-            members = client.party.members
+async def kick(ctx: fortnitepy.ext.commands.Context, *, member = None):
+    try:
+        user = await client.fetch_user(member)
+        member = client.party.get_member(user.id)
+        if member is None:
+            await ctx.send("Couldn't find that user. Are you sure they're in the party?")
 
-            for m in members:
-                try:
-                    member = await client.get_user(m)
-                    await member.kick()
-                except fortnitepy.Forbidden:
-                    await ctx.send("I am not party leader.")
-
-            await ctx.send("Kicked everyone in the party")
-
-        else:
-            try:
-                user = await client.fetch_profile(member)
-                member = client.party.members.get(user.id)
-                if member is None:
-                    await ctx.send("Couldn't find that user. Are you sure they're in the party?")
-
-                await member.kick()
-                await ctx.send(f'Kicked: {member.display_name}')
-            except fortnitepy.Forbidden:
-                await ctx.send("I can't kick that user because I am not party leader")
-            except AttributeError:
-                await ctx.send("Couldn't find that user.")
-    else:
-        await ctx.send(f'No member was given. Try: {prefix}kick (user)')
+        await member.kick()
+        await ctx.send(f'Kicked: {member.display_name}')
+    except fortnitepy.Forbidden:
+        await ctx.send("I can't kick that user because I am not party leader")
+    except AttributeError:
+        await ctx.send("Couldn't find that user.")
 
 
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def promote(ctx, *, member = None):
-    if member is None:
-        user = await client.fetch_profile(ctx.message.author.id)
-        member = client.party.members.get(user.id)
-    if member is not None:
-        user = await client.fetch_profile(member.display_name)
-        member = client.party.members.get(user.id)
+async def promote(ctx, *, username = None):
+    if username is None:
+        user = await client.fetch_user(ctx.author.display_name)
+        member = client.party.get_member(user.id)
+    else:
+        user = await client.fetch_user(username)
+        member = client.party.get_member(user.id)
     try:
         await member.promote()
         await ctx.send(f"Promoted: {member.display_name}")
@@ -1469,54 +1414,6 @@ async def add(ctx, *, member = None):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def remove(ctx, *, friend = None):
-    if friend is not None:
-        if friend.lower() == 'all':
-            await ctx.send("Are you sure you want to remove ALL of the client's friends? (yes/no)")
-            response = await client.wait_for('friend_message', timeout=15)
-            content = response.content.lower()
-
-            if 'yes' in content.lower():
-                await ctx.send("Admin password?")
-                res1 = await client.wait_for('friend_message', timeout=15)
-                content1 = res1.content.lower()
-
-                if content1.lower() == data['AdminPassword']:
-                    try:
-                        await client.remove_all_friends()
-                        await ctx.send(f'Successfully removed all friends.')
-                        print(Fore.GREEN + ' [+] ' + Fore.RESET + "Removed all of the client's friends")
-                    except fortnitepy.HTTPException:
-                        await ctx.send("There was an error trying to remove all friends")
-                else:
-                    ctx.send("That password is not correct. Kept all of the client's friends")
-            elif 'no' in content.lower():
-                await ctx.send('Kept all friends.')
-            else:
-                await ctx.send('That is not a valid response. Kept all friends.')
-
-        else:
-            try:
-                user = await client.fetch_profile(friend)
-                friends = client.friends
-
-                if user.id in friends:
-                    await client.remove_or_decline_friend(user.id)
-                    await ctx.send(f'Successfully removed {user.display_name} as a friend.')
-                    print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Removed ' + Fore.LIGHTBLACK_EX + f'{user.display_name}' + Fore.RESET + ' as a friend.')
-                else:
-                    await ctx.send(f"I don't have {user.display_name} added as a friend.")
-            except fortnitepy.HTTPException:
-                await ctx.send("There was an error trying to remove that friend.")
-            except AttributeError:
-                await ctx.send("I can't find a player with that name.")
-    else:
-        await ctx.send(f"No user was given. Try: {prefix}remove (friend)")
-
-
-@commands.dm_only()
-@client.command()
-@is_admin()
 async def block(ctx, *, user = None):
     if user is not None:
         try:
@@ -1611,7 +1508,7 @@ async def friends(ctx):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def members(ctx):
+async def members(ctx: fortnitepy.ext.commands.Context):
     pmembers = client.party.members
     partyMembers = []
     
@@ -1623,6 +1520,11 @@ async def members(ctx):
     for x in partyMembers:
         if x is not None:
             await ctx.send(x)
+
+@commands.dm_only()
+@client.command()
+async def invisible(ctx: fortnitepy.ext.commands.Context):
+    await client.party.me.set_outfit("CID_Invisible")
 
 
 @commands.dm_only()
