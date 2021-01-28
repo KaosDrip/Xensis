@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 try:
     import asyncio
     import sys
@@ -80,19 +81,16 @@ def getNewEmotes():
     return eids
 
 def get_device_auth_details():
-    if os.path.isfile('auths.json'):
-        with open('auths.json', 'r') as fp:
+    if os.path.isfile("auths.json"):
+        with open("auths.json", 'r') as fp:
             return json.load(fp)
-    else:
-        with open('auths.json', 'w+') as fp:
-            json.dump({}, fp)
     return {}
 
 def store_device_auth_details(email, details):
     existing = get_device_auth_details()
     existing[email] = details
 
-    with open('auths.json', 'w') as fp:
+    with open("auths.json", 'w') as fp:
         json.dump(existing, fp)
 
 with open('config.json') as f:
@@ -136,7 +134,15 @@ client = commands.Bot(
 client.party_build_id = "1:3:"
 
 @client.event
+async def event_device_auth_generate(details, email):
+    store_device_auth_details(email, details)
+
+@client.event
 async def event_ready():
+    os.system('cls||clear')
+    print(intro)
+    print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Client ready as ' + Fore.LIGHTGREEN_EX + f'{client.user.display_name}')
+
     member = client.party.me
 
     await member.edit_and_keep(
@@ -1525,6 +1531,7 @@ async def members(ctx: fortnitepy.ext.commands.Context):
 @client.command()
 async def invisible(ctx: fortnitepy.ext.commands.Context):
     await client.party.me.set_outfit("CID_Invisible")
+    await ctx.send("I am now invisible.")
 
 
 @commands.dm_only()
