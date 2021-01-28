@@ -1,6 +1,5 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8-blue.svg)](https://python.org)
-[![GitHub forks](https://img.shields.io/github/forks/kaosdrip/Xensis.svg)
 # New Update. What changed and fixed?
 - Fixed Status Command old one was broken.
 - Fixed that you cant join the Bot.
