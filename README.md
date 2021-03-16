@@ -1,20 +1,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
-# New Update. What changed and fixed?
-- Fixed Status Command old one was broken.
-- Fixed that you cant join the Bot.
-- Fixed Variants. (PinkGhoul...)
-- Fixed "!copy" command.
-- Removed "!kick all" command. (adding back with next update)
-- Fixed "!kick" command.
-- Added Emote in copy command.
-- Removed "Remove all friends", because it got removed from fortnitepy.
-- Removed some trash stuff. (that we don`t need)
-- Fixed "!unhide" command.
-- Fixed "!promote" command.
-- Added "!invisible" command.
-
-Fixed by Aspect#0002.
+# Need to fix.
+- !copy
+- !hide (user)
 
 # Xensis
 
