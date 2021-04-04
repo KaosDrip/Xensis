@@ -358,6 +358,10 @@ async def emote(ctx, *, content = None):
         await client.party.me.clear_emote()
         await client.party.me.set_emote(asset='EID_Floss')
         await ctx.send(f'Emote set to: Floss')
+    elif content.lower() == 'scenario':
+        await client.party.me.clear_emote()
+        await client.party.me.set_emote(asset='EID_KPopDance03')
+        await ctx.send(f'Emote set to: Scenario')
     elif content.lower() == 'none':
         await client.party.me.clear_emote()
         await ctx.send(f'Emote set to: None')
