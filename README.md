@@ -1,8 +1,12 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
-# Need to fix.
-- !copy
+# Next Update!
+Things to fix:
 - !hide (user)
+- !copy
+
+Things to add:
+- Auto Updater
 
 # Xensis
 
