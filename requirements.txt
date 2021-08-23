@@ -1,5 +1,5 @@
 fortnitepy==3.6.2
-aiohttp==3.7.4
-colorama==0.4.4
+aiohttp
+colorama
 BenBotAsync==3.0.1
-requests==2.26.0
+requests
