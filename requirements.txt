@@ -1,5 +1,5 @@
-fortnitepy==3.6.2
+fortnitepy
 aiohttp
 colorama
-BenBotAsync==3.0.1
+BenBotAsync
 requests
