@@ -1565,30 +1565,6 @@ async def user(ctx, *, user = None):
 
 @commands.dm_only()
 @client.command()
-@is_admin()
-async def nickname(ctx, *, user = None):
-    if user != None:
-        user = await client.fetch_profile(user)
-        if client.has_friend(user.id):
-            def check(m):
-                return m.author.id == ctx.author.id
-            try:
-                message = await client.wait_for("message", check=check, timeout=60)
-                friend = client.get_friend(user.id)
-                try:
-                    await friend.set_nickname(message.content)
-                    await ctx.send(f"Set {user.display_name}'s nickname to {message.content}")
-                except:
-                    await ctx.send("That nickname is too short/long to be set!")
-            except asyncio.TimeoutError:
-                await ctx.send("You took too long, try again later!")
-        else:
-            await ctx.send("I am not friends with that person.")
-    else:
-        await ctx.send("User wasn't found, try again later!")
-
-@commands.dm_only()
-@client.command()
 async def admin(ctx, setting = None, *, user = None):
     if (setting is None) and (user is None):
         await ctx.send(f"Missing one or more arguments. Try: {prefix}admin (add, remove, list) (user)")
