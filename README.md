@@ -1,5 +1,8 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
+
+### Recommended to use on Python 3.8 stable on it.
+
 # New Update! Added Auto-Updater.
 Things to fix:
 - !hide (user)
