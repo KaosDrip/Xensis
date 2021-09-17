@@ -1675,3 +1675,5 @@ if (data['email'] and data['password']) and (data['email'] != "" and data['passw
         exit()
 else:
     print(Fore.RED + ' [ERROR] ' + Fore.RESET + 'Can not log in, as no accounts credentials were provided.')
+
+#PlaceHolder
