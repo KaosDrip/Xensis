@@ -1563,6 +1563,7 @@ async def user(ctx, *, user = None):
     else:
         await ctx.send(f'No ID was given. Try: {prefix}user (ID)')
 
+
 @commands.dm_only()
 @client.command()
 async def admin(ctx, setting = None, *, user = None):
