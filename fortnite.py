@@ -39,10 +39,9 @@ intro = Fore.LIGHTRED_EX + """
 
 print(intro)
 
-response = requests.get("https://benbot.app/api/v1/status")
-patch = response.json()["currentFortniteVersion"]
+patch = "21.51"
 
-print(f'\n A free lobbybot network, created by KaosDrip. Fixed by Aspect#0002 for Patch {patch}.\n')
+print(f'\n A free lobbybot network, created by KaosDrip. Works for Patch: {patch}.\n')
 
 def lenPartyMembers():
     members = client.party.members
@@ -58,7 +57,7 @@ def lenFriends():
     return len(friends)
 
 def getNewSkins():
-    r = requests.get('https://benbot.app/api/v1/files/added')
+    r = requests.get('https://fortnite-api.com/v2/cosmetics/br/new')
 
     response = r.json()
 
@@ -70,7 +69,7 @@ def getNewSkins():
     return cids
 
 def getNewEmotes():
-    r = requests.get('https://benbot.app/api/v1/files/added')
+    r = requests.get('https://fortnite-api.com/v2/cosmetics/br/new')
 
     response = r.json()
 
