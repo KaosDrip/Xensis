@@ -1,12 +1,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
 
-### Recommended to use on Python 3.8 stable on it.
+### Recommended to use on Python 3.7 stable on it.
 
-# New Update! Added Auto-Updater.
-Things to fix:
-- !hide (user)
-- !copy
+# I do know, that bot only works with IDs (CID, EID..) BenBot API does not exists anymore and i have no time to update so if i have enought free time i will update.
 
 # Xensis
 
@@ -22,7 +19,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 You will need Python 3.6 or higher for this bot to run.
 
-> <a href="https://www.python.org/downloads/release/python-360/" target="_blank">Python 3.6+</a>
+> <a href="https://www.python.org/downloads/release/python-370/" target="_blank">Python 3.6+</a>
 
 
 ### Installing
