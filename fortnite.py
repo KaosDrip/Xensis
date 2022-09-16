@@ -41,7 +41,7 @@ print(intro)
 
 patch = "21.51"
 
-print(f'\n A free lobbybot network, created by KaosDrip. Works for Patch: {patch}.\n')
+print(f'\n A free lobbybot network, created by KaosDrip. Works for Patch: {patch}. You only can use IDs at the moment, because BenBot api does not exists anymore.\n')
 
 def lenPartyMembers():
     members = client.party.members
