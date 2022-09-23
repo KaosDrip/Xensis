@@ -1,4 +1,9 @@
-import time,requests,os,traceback,sys,json
+import time
+import requests
+import os
+import traceback
+import sys
+import json
 
 with open("fortnite.py", encoding='utf-8') as f:
     current = f.read().replace('“','"').replace('”','"')
