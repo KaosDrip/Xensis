@@ -3,7 +3,7 @@
 
 ### Recommended to use on Python 3.7 stable on it.
 
-# I do know, that bot only works with IDs (CID, EID..) BenBot API does not exists anymore and i have no time to update so if i have enought free time i will update.
+# WORKS WITH LATEST FORTNITE VERSION
 
 # Xensis
 
