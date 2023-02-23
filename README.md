@@ -1,7 +1,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
 [![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
 
-### Recommended to use on Python 3.7 stable on it.
+### Recommended to use on Python 3.8 stable on it.
 
 # USE FortniteAPIAsync 0.1.6 NOT 0.1.7!!!!
 
