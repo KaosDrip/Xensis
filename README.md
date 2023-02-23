@@ -3,7 +3,7 @@
 
 ### Recommended to use on Python 3.7 stable on it.
 
-# WORKS WITH LATEST FORTNITE VERSION
+# USE FortniteAPIAsync 0.1.6 NOT 0.1.7!!!!
 
 # Xensis
 
