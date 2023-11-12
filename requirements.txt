@@ -1,7 +1,7 @@
 fortnitepy
 aiohttp==3.9.0b0
 colorama
-FortniteAPIAsync
+FortniteAPIAsync==0.1.6
 requests
 aioconsole
 pytz
