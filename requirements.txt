@@ -1,5 +1,7 @@
-fortnitepy==3.6.8
-aiohttp==3.8.4
-colorama==0.4.6
-FortniteAPIAsync==0.1.6
-requests==2.28.2
+fortnitepy
+aiohttp==3.9.0b0
+colorama
+FortniteAPIAsync
+requests
+aioconsole
+pytz
