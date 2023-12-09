@@ -1,4 +1,4 @@
-fortnitepy==3.6.8
+fortnitepy==3.6.9
 aiohttp==3.9.0
 colorama==0.4.6
 FortniteAPIAsync==0.1.6
