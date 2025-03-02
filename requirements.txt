@@ -1,5 +1,6 @@
 fortnitepy
 aiohttp
+aioconsole
 colorama
 FortniteAPIAsync==0.1.6
 requests
