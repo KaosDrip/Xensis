@@ -13,8 +13,8 @@ try:
     from colorama import Fore, Back, Style, init
     init(autoreset=True)
 
-    import fortnitepy
-    from fortnitepy.ext import commands
+    import rebootpy
+    from rebootpy.ext import commands
     import FortniteAPIAsync
     import aiohttp
     import requests
@@ -41,9 +41,23 @@ intro = Fore.LIGHTRED_EX + """
 
 print(intro)
 
-patch = "23.10"
+def get_current_patch():
+    try:
+        response = requests.get('https://fortnite-api.com/v2/aes')
+        response.raise_for_status()
+        data = response.json()
+        build = data['data']['build']
+        return build 
+    except requests.RequestException as e:
+        print(f"Failed to fetch patch version: {e}")
+        return "Unknown"
+    except (KeyError, IndexError) as e:
+        print(f"Error parsing patch data: {e}")
+        return "Unknown"
 
-print(f'\n A free lobbybot network, created by KaosDrip. Works for Patch: {patch}. We switched to FortniteAPIAsync. Please report bugs.\n')
+patch = get_current_patch()
+
+print(f'\n A free lobbybot network, created by KaosDrip. Works for Patch: {patch}.\n')
 
 def lenPartyMembers():
     members = client.party.members
@@ -67,7 +81,7 @@ def getNewSkins():
 
     for cid in [item for item in response if item.split('/')[-1].upper().startswith('CID_')]:
         cids.append(cid.split('/')[-1].split('.')[0])
-    
+
     return cids
 
 def getNewEmotes():
@@ -79,7 +93,7 @@ def getNewEmotes():
 
     for cid in [item for item in response if item.split('/')[-1].upper().startswith('EID_')]:
         eids.append(cid.split('/')[-1].split('.')[0])
-    
+
     return eids
 
 def get_device_auth_details():
@@ -123,7 +137,7 @@ prefix = '!'
 client = commands.Bot(
     command_prefix=prefix,
     case_insensitive=True,
-    auth=fortnitepy.AdvancedAuth(
+    auth=rebootpy.AdvancedAuth(
         email=data['email'],
         password=data['password'],
         prompt_authorization_code=True,
@@ -131,13 +145,13 @@ client = commands.Bot(
         **device_auth_details
     ),
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform']),
+    platform=rebootpy.Platform(data['platform']),
 )
 client.party_build_id = "1:3:" # Fix for error code 91 and 93
 
 @client.event
-async def event_device_auth_generate(details, email):
-    store_device_auth_details(email, details)
+async def event_device_auth_generate(details):
+    store_device_auth_details(data['email'], details)
 
 @client.event
 async def event_ready():
@@ -149,32 +163,29 @@ async def event_ready():
 
     await member.edit_and_keep(
         partial(
-            fortnitepy.ClientPartyMember.set_outfit,
+            rebootpy.ClientPartyMember.set_outfit,
             asset=data['cid']
         ),
         partial(
-            fortnitepy.ClientPartyMember.set_backpack,
+            rebootpy.ClientPartyMember.set_backpack,
             asset=data['bid']
         ),
         partial(
-            fortnitepy.ClientPartyMember.set_pickaxe,
+            rebootpy.ClientPartyMember.set_pickaxe,
             asset=data['pid']
         ),
         partial(
-            fortnitepy.ClientPartyMember.set_banner,
+            rebootpy.ClientPartyMember.set_banner,
             icon=data['banner'],
             color=data['banner_color'],
             season_level=data['level']
         ),
         partial(
-            fortnitepy.ClientPartyMember.set_battlepass_info,
+            rebootpy.ClientPartyMember.set_battlepass_info,
             has_purchased=True,
             level=data['bp_tier']
         )
     )
-
-    client.set_avatar(fortnitepy.Avatar(asset=data['cid'], background_colors=['#ffffff', '#ee1064', '#ff0000']))
-    
 
 @client.event
 async def event_party_invite(invite):
@@ -232,7 +243,7 @@ async def event_party_member_join(member):
                 print(Fore.LIGHTGREEN_EX + f' [+] {member.display_name}' + Fore.RESET + 'has joined the lobby.')
             else:
                 print(f' [+] {member.display_name} has joined the lobby.' + Fore.LIGHTBLACK_EX + f' ({lenPartyMembers()})')
-        except fortnitepy.HTTPException:
+        except rebootpy.HTTPException:
             pass
 
 
@@ -244,7 +255,7 @@ async def event_party_member_leave(member):
                 print(Fore.LIGHTGREEN_EX + f' [+] {member.display_name}' + Fore.RESET + 'has left the lobby.')
             else:
                 print(f' [+] {member.display_name} has left the lobby.' + Fore.LIGHTBLACK_EX + f' ({lenPartyMembers()})')
-        except fortnitepy.HTTPException:
+        except rebootpy.HTTPException:
             pass
 
 
@@ -281,7 +292,7 @@ async def event_friend_message(message):
         try:
             await client.party.set_playlist(playlist=message.content)
             await message.reply(f'Playlist set to: {message.content}')
-        except fortnitepy.Forbidden:
+        except rebootpy.Forbidden:
             await message.reply(f"I can not set gamemode because I am not party leader.")
     elif message.content.lower().startswith('prefix'):
         await message.reply(f'Current prefix: {prefix}')
@@ -293,7 +304,7 @@ async def event_command_error(ctx, error):
         await ctx.send(f'That is not a command. Try {prefix}help')
     elif isinstance(error, IndexError):
         pass
-    elif isinstance(error, fortnitepy.HTTPException):
+    elif isinstance(error, rebootpy.HTTPException):
         pass
     elif isinstance(error, commands.CheckFailure):
         await ctx.send("You don't have access to that command.")
@@ -448,7 +459,7 @@ async def emoji(ctx, *, content = None):
     except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f'Could not find an emoji named: {content}')
 
-    
+
 @commands.dm_only()
 @client.command()
 async def current(ctx, setting = None):
@@ -517,7 +528,7 @@ async def cid(ctx, *, content = None):
             print(f' [+] The CID for {cosmetic.name} is: {cosmetic.id}')
         except FortniteAPIAsync.exceptions.NotFound:
             await ctx.send(f'Could not find a skin named: {content}')
-        
+
 
 @commands.dm_only()
 @client.command()
@@ -613,7 +624,7 @@ async def random(ctx, content = None):
 
     pickaxe = rand.choice(pickaxes)
 
-    
+
     if content is None:
         me = client.party.me
         await me.set_outfit(asset=skin.id)
@@ -649,7 +660,7 @@ async def point(ctx, *, content = None):
         await client.party.me.clear_emote()
         await client.party.me.set_emote(asset='EID_IceKing')
         await ctx.send(f'Pointing with: {client.party.me.pickaxe}')
-    
+
     else:
         if content.upper().startswith('Pickaxe_'):
             await client.party.me.set_pickaxe(asset=content.upper())
@@ -749,7 +760,7 @@ async def hologram(ctx):
     await client.party.me.set_outfit(
         asset='CID_VIP_Athena_Commando_M_GalileoGondola_SG'
     )
-    
+
     await ctx.send("Skin set to: Hologram")
 
 
@@ -773,7 +784,7 @@ async def itemshop(ctx):
                 await asyncio.sleep(5)
 
     await client.party.me.clear_emote()
-    
+
     await ctx.send("Done!")
 
     await asyncio.sleep(1.5)
@@ -817,7 +828,7 @@ async def new(ctx, content = None):
             await asyncio.sleep(4)
 
     await client.party.me.clear_emote()
-    
+
     await ctx.send('Done!')
 
     await asyncio.sleep(1.5)
@@ -831,27 +842,27 @@ async def new(ctx, content = None):
 @commands.dm_only()
 @client.command()
 async def ready(ctx):
-    await client.party.me.set_ready(fortnitepy.ReadyState.READY)
+    await client.party.me.set_ready(rebootpy.ReadyState.READY)
     await ctx.send('Ready!')
 
 
 @commands.dm_only()
 @client.command()
 async def unready(ctx):
-    await client.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
+    await client.party.me.set_ready(rebootpy.ReadyState.NOT_READY)
     await ctx.send('Unready!')
 
 
 @commands.dm_only()
 @client.command()
 async def sitin(ctx):
-    await client.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
+    await client.party.me.set_ready(rebootpy.ReadyState.NOT_READY)
     await ctx.send('Sitting in')
 
 @commands.dm_only()
 @client.command()
 async def sitout(ctx):
-    await client.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
+    await client.party.me.set_ready(rebootpy.ReadyState.SITTING_OUT)
     await ctx.send('Sitting out')
 
 
@@ -887,7 +898,7 @@ async def banner(ctx, args1 = None, args2 = None):
             await client.party.me.set_banner(
                 color = args1
             )
-            
+
             await ctx.send(f'Banner color set to: {args1}')
 
         elif args1.isnumeric() == True:
@@ -912,7 +923,7 @@ async def banner(ctx, args1 = None, args2 = None):
             )
 
             await ctx.send(f'Banner icon set to: {args1} -- Banner color set to: {args2}')
-        
+
         elif args2.isnumeric() == True:
             await client.party.me.set_banner(
                 icon = args1,
@@ -957,33 +968,33 @@ async def copy(ctx, *, username = None):
 
     await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_outfit,
+                rebootpy.ClientPartyMember.set_outfit,
                 asset=member.outfit,
                 variants=member.outfit_variants
             ),
             partial(
-                fortnitepy.ClientPartyMember.set_backpack,
+                rebootpy.ClientPartyMember.set_backpack,
                 asset=member.backpack,
                 variants=member.backpack_variants
             ),
             partial(
-                fortnitepy.ClientPartyMember.set_pickaxe,
+                rebootpy.ClientPartyMember.set_pickaxe,
                 asset=member.pickaxe,
                 variants=member.pickaxe_variants
             ),
             partial(
-                fortnitepy.ClientPartyMember.set_banner,
+                rebootpy.ClientPartyMember.set_banner,
                 icon=member.banner[0],
                 color=member.banner[1],
                 season_level=member.banner[2]
             ),
             partial(
-                fortnitepy.ClientPartyMember.set_battlepass_info,
+                rebootpy.ClientPartyMember.set_battlepass_info,
                 has_purchased=member.battlepass_info[0],
                 level=member.battlepass_info[1]
             ),
             partial(
-                fortnitepy.ClientPartyMember.set_emote,
+                rebootpy.ClientPartyMember.set_emote,
                 asset=member.emote
             )
         )
@@ -998,7 +1009,7 @@ async def event_party_member_backpack_change(member, before, after):
         else:
             await client.party.me.edit_and_keep(
                 partial(
-                    fortnitepy.ClientPartyMember.set_backpack,
+                    rebootpy.ClientPartyMember.set_backpack,
                     asset=after,
                     variants=member.backpack_variants
                 )
@@ -1009,7 +1020,7 @@ async def event_party_member_backpack_variants_change(member, before, after):
     if member == copied_player:
         await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_backpack,
+                rebootpy.ClientPartyMember.set_backpack,
                 variants=member.backpack_variants
             )
         )
@@ -1022,7 +1033,7 @@ async def event_party_member_emote_change(member, before, after):
         else:
             await client.party.me.edit_and_keep(
                 partial(
-                    fortnitepy.ClientPartyMember.set_emote,
+                    rebootpy.ClientPartyMember.set_emote,
                     asset=after
                 )
             )
@@ -1032,7 +1043,7 @@ async def event_party_member_pickaxe_change(member, before, after):
     if member == copied_player:
         await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_pickaxe,
+                rebootpy.ClientPartyMember.set_pickaxe,
                 asset=after,
                 variants=member.pickaxe_variants
             )
@@ -1043,7 +1054,7 @@ async def event_party_member_pickaxe_variants_change(member, before, after):
     if member == copied_player:
         await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_pickaxe,
+                rebootpy.ClientPartyMember.set_pickaxe,
                 variants=member.pickaxe_variants
             )
         )
@@ -1053,7 +1064,7 @@ async def event_party_member_banner_change(member, before, after):
     if member == copied_player:
         await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_banner,
+                rebootpy.ClientPartyMember.set_banner,
                 icon=member.banner[0],
                 color=member.banner[1],
                 season_level=member.banner[2]
@@ -1065,7 +1076,7 @@ async def event_party_member_battlepass_info_change(member, before, after):
     if member == copied_player:
         await client.party.me.edit_and_keep(
             partial(
-                fortnitepy.ClientPartyMember.set_battlepass_info,
+                rebootpy.ClientPartyMember.set_battlepass_info,
                 has_purchased=member.battlepass_info[0],
                 level=member.battlepass_info[1]
             )
@@ -1105,7 +1116,7 @@ async def hide(ctx, *, user = None):
                 await ctx.send(f"Hid {member.display_name}")
             except AttributeError:
                 await ctx.send("I could not find that user.")
-            except fortnitepy.HTTPException:
+            except rebootpy.HTTPException:
                 await ctx.send("I am not party leader.")
         else:
             try:
@@ -1122,7 +1133,7 @@ async def hide(ctx, *, user = None):
                 )
 
                 await ctx.send("Hid everyone in the party.")
-            except fortnitepy.HTTPException:
+            except rebootpy.HTTPException:
                 await ctx.send("I am not party leader.")
     else:
         await ctx.send("I need party leader to do this!")
@@ -1130,7 +1141,7 @@ async def hide(ctx, *, user = None):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def unhide(ctx: fortnitepy.ext.commands.Context, *, username = None):
+async def unhide(ctx: rebootpy.ext.commands.Context, *, username = None):
     if client.party.me.leader:
         user = await client.fetch_user(ctx.author.display_name)
         member = client.party.get_member(user.id)
@@ -1141,36 +1152,6 @@ async def unhide(ctx: fortnitepy.ext.commands.Context, *, username = None):
 
     else:
         await ctx.send("I am not party leader.")
-
-
-@commands.dm_only()
-@client.command()
-@is_admin()
-async def avatar(ctx, *, skin = None):
-    if skin is None:
-        await ctx.send(f'No skin was given. Try: {prefix}avatar (skin name, cid)')
-    elif skin.upper().startswith('CID_'):
-        try:
-            cosmetic = await fortnite_api.cosmetics.get_cosmetic_from_id(
-                cosmetic_id=skin.upper()
-            )
-            client.set_avatar(fortnitepy.Avatar(asset=cosmetic.id))
-            await ctx.send(f'Avatar set to: {cosmetic.id}')
-        except FortniteAPIAsync.exceptions.NotFound:
-            await ctx.send(f'Could not find the ID: {skin}')
-    else:
-        try:
-            cosmetic = await fortnite_api.cosmetics.get_cosmetic(
-                lang="en",
-                searchLang="en",
-                name=skin,
-                backendType="AthenaCharacter"
-            )
-            client.set_avatar(fortnitepy.Avatar(asset=cosmetic.id))
-            await ctx.send(f'Avatar set to: {cosmetic.name}')
-        except FortniteAPIAsync.exceptions.NotFound:
-            await ctx.send(f'Could not find a skin named: {skin}')
-
 
 @commands.dm_only()
 @client.command()
@@ -1199,7 +1180,7 @@ async def whisper(ctx, member = None, *, message = None):
                 await ctx.send("That friend is offline.")
         except AttributeError:
             await ctx.send("I couldn't find that friend.")
-        except fortnitepy.HTTPException:
+        except rebootpy.HTTPException:
             await ctx.send("Something went wrong sending the message.")
     else:
         await ctx.send(f"Command missing one or more arguments. Try: {prefix}whisper (friend) (message)")
@@ -1272,7 +1253,7 @@ async def leave(ctx):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def kick(ctx: fortnitepy.ext.commands.Context, *, member = None):
+async def kick(ctx: rebootpy.ext.commands.Context, *, member = None):
     try:
         user = await client.fetch_user(member)
         member = client.party.get_member(user.id)
@@ -1281,7 +1262,7 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, member = None):
 
         await member.kick()
         await ctx.send(f'Kicked: {member.display_name}')
-    except fortnitepy.Forbidden:
+    except rebootpy.Forbidden:
         await ctx.send("I can't kick that user because I am not party leader")
     except AttributeError:
         await ctx.send("Couldn't find that user.")
@@ -1300,11 +1281,11 @@ async def promote(ctx, *, username = None):
     try:
         await member.promote()
         await ctx.send(f"Promoted: {member.display_name}")
-    except fortnitepy.Forbidden:
+    except rebootpy.Forbidden:
         await ctx.send("Client is not party leader")
-    except fortnitepy.PartyError:
+    except rebootpy.PartyError:
         await ctx.send("That person is already party leader")
-    except fortnitepy.HTTPException:
+    except rebootpy.HTTPException:
         await ctx.send("Something went wrong trying to promote that member")
     except AttributeError:
         await ctx.send("I could not find that user")
@@ -1317,17 +1298,17 @@ async def privacy(ctx, setting = None):
     if setting is not None:
         try:
             if setting.lower() == 'public':
-                await client.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
+                await client.party.set_privacy(rebootpy.PartyPrivacy.PUBLIC)
                 await ctx.send(f"Party Privacy set to: Public")
             elif setting.lower() == 'friends':
-                await client.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS)
+                await client.party.set_privacy(rebootpy.PartyPrivacy.FRIENDS)
                 await ctx.send(f"Party Privacy set to: Friends Only")
             elif setting.lower() == 'private':
-                await client.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE)
+                await client.party.set_privacy(rebootpy.PartyPrivacy.PRIVATE)
                 await ctx.send(f"Party Privacy set to: Private")
             else:
                 await ctx.send("That is not a valid privacy setting. Try: Public, Friends, or Private")
-        except fortnitepy.Forbidden:
+        except rebootpy.Forbidden:
             await ctx.send("I can not set the party privacy because I am not party leader.")
     else:
         await ctx.send(f"No privacy setting was given. Try: {prefix}privacy (Public, Friends, Private)")
@@ -1347,15 +1328,15 @@ async def join(ctx, *, member = None):
 
         await friend.join_party()
         await ctx.send(f"Joined {friend.display_name}'s party.")
-    except fortnitepy.Forbidden:
+    except rebootpy.Forbidden:
         await ctx.send("I can not join that party because it is private.")
-    except fortnitepy.PartyError:
+    except rebootpy.PartyError:
         await ctx.send("That user is already in the party.")
-    except fortnitepy.HTTPException:
+    except rebootpy.HTTPException:
         await ctx.send("Something went wrong joining the party")
     except AttributeError:
         await ctx.send("I can not join that party. Are you sure I have them friended?")
-        
+
 
 @commands.dm_only()
 @client.command()
@@ -1372,7 +1353,7 @@ async def invite(ctx, *, member = None):
                 if friend.is_online():
                     invited.append(friend.display_name)
                     await friend.invite()
-            
+
             await ctx.send(f"Invited {len(invited)} friends to the party.")
 
         except Exception:
@@ -1389,9 +1370,9 @@ async def invite(ctx, *, member = None):
 
             await friend.invite()
             await ctx.send(f"Invited {friend.display_name} to the party.")
-        except fortnitepy.PartyError:
+        except rebootpy.PartyError:
             await ctx.send("That user is already in the party.")
-        except fortnitepy.HTTPException:
+        except rebootpy.HTTPException:
             await ctx.send("Something went wrong inviting that user.")
         except AttributeError:
             await ctx.send("I can not invite that user. Are you sure I have them friended?")
@@ -1415,7 +1396,7 @@ async def add(ctx, *, member = None):
                 await ctx.send(f'Sent a friend request to {user.display_name}')
                 print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Sent a friend request to: ' + Fore.LIGHTBLACK_EX + f'{user.display_name}')
 
-        except fortnitepy.HTTPException:
+        except rebootpy.HTTPException:
             await ctx.send("There was a problem trying to add this friend.")
         except AttributeError:
             await ctx.send("I can't find a player with that name.")
@@ -1436,7 +1417,7 @@ async def block(ctx, *, user = None):
                 try:
                     await user.block()
                     await ctx.send(f"Blocked {user.display_name}")
-                except fortnitepy.HTTPException:
+                except rebootpy.HTTPException:
                     await ctx.send("Something went wrong trying to block that user.")
 
             elif user.id in client.blocked_users:
@@ -1457,7 +1438,7 @@ async def blocked(ctx):
     for b in client.blocked_users:
         user = client.get_blocked_user(b)
         blockedusers.append(user.display_name)
-    
+
     await ctx.send(f'Client has {len(blockedusers)} users blocked:')
     for x in blockedusers:
         if x is not None:
@@ -1476,7 +1457,7 @@ async def unblock(ctx, *, user = None):
                 try:
                     await client.unblock_user(member.id)
                     await ctx.send(f'Successfully unblocked {member.display_name}')
-                except fortnitepy.HTTPException:
+                except rebootpy.HTTPException:
                     await ctx.send('Something went wrong trying to unblock that user.')
             else:
                 await ctx.send('That user is not blocked')
@@ -1484,7 +1465,7 @@ async def unblock(ctx, *, user = None):
             await ctx.send("I can't find a player with that name.")
     else:
         await ctx.send(f'No user was given. Try: {prefix}unblock (blocked user)')
-    
+
 
 @commands.dm_only()
 @client.command()
@@ -1501,12 +1482,12 @@ async def friends(ctx):
                 onlineFriends.append(friend.display_name)
             else:
                 offlineFriends.append(friend.display_name)
-        
+
         await ctx.send(f"Client has: {len(onlineFriends)} friends online and {len(offlineFriends)} friends offline")
         await ctx.send("(Check cmd for full list of friends)")
 
         print(" [+] Friends List: " + Fore.GREEN + f'{len(onlineFriends)} Online ' + Fore.RESET + "/" + Fore.LIGHTBLACK_EX + f' {len(offlineFriends)} Offline ' + Fore.RESET + "/" + Fore.LIGHTWHITE_EX + f' {len(onlineFriends) + len(offlineFriends)} Total')
-        
+
         for x in onlineFriends:
             if x is not None:
                 print(Fore.GREEN + " " + x)
@@ -1520,14 +1501,14 @@ async def friends(ctx):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def members(ctx: fortnitepy.ext.commands.Context):
+async def members(ctx: rebootpy.ext.commands.Context):
     pmembers = client.party.members
     partyMembers = []
-    
+
     for m in pmembers:
         member = client.get_user(m)
         partyMembers.append(member.display_name)
-    
+
     await ctx.send(f"There are {len(partyMembers)} members in {client.user.display_name}'s party:")
     for x in partyMembers:
         if x is not None:
@@ -1535,7 +1516,7 @@ async def members(ctx: fortnitepy.ext.commands.Context):
 
 @commands.dm_only()
 @client.command()
-async def invisible(ctx: fortnitepy.ext.commands.Context):
+async def invisible(ctx: rebootpy.ext.commands.Context):
     await client.party.me.set_outfit("CID_Invisible")
     await ctx.send("I am now invisible.")
 
@@ -1546,7 +1527,7 @@ async def invisible(ctx: fortnitepy.ext.commands.Context):
 async def id(ctx, *, user = None):
     if user is not None:
         user = await client.fetch_profile(user)
-    
+
     elif user is None:
         user = await client.fetch_profile(ctx.message.author.id)
 
@@ -1616,7 +1597,7 @@ async def admin(ctx, setting = None, *, user = None):
                     await ctx.send("You were kept as admin.")
                 else:
                     await ctx.send("Not a correct reponse. Cancelling command.")
-                
+
         elif setting == 'list':
             if user.id in info['FullAccess']:
                 admins = []
@@ -1635,7 +1616,7 @@ async def admin(ctx, setting = None, *, user = None):
 
         else:
             await ctx.send(f"That is not a valid setting. Try: {prefix}admin (add, remove, list) (user)")
-            
+
     elif (setting is not None) and (user is not None):
         user = await client.fetch_profile(user)
 
@@ -1676,13 +1657,11 @@ async def admin(ctx, setting = None, *, user = None):
 if (data['email'] and data['password']) and (data['email'] != "" and data['password'] != ""):
     try:
         client.run()
-    except fortnitepy.errors.AuthException as e:
+    except rebootpy.errors.AuthException as e:
         print(Fore.RED + ' [ERROR] ' + Fore.RESET + f'{e}')
-    except ModuleNotFoundError:
+    except ModuleNotFoundError as e:
         print(e)
         print(Fore.RED + f'[-] ' + Fore.RESET + 'Failed to import 1 or more modules. Run "INSTALL PACKAGES.bat')
         exit()
 else:
     print(Fore.RED + ' [ERROR] ' + Fore.RESET + 'Can not log in, as no accounts credentials were provided.')
-
-#PlaceHolder
