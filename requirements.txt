@@ -1,6 +1,6 @@
-fortnitepy==3.6.9
+fortnitepy
 aiohttp
 colorama
 FortniteAPIAsync==0.1.6
-requests==2.31.0
+requests
 pytz
