@@ -1,67 +1,102 @@
 [![GitHub stars](https://img.shields.io/github/stars/KaosDrip/Xensis.svg)](https://github.com/KaosDrip/Xensis/stargazers)
-[![Python version](https://img.shields.io/badge/python%2C%203.6%2C%203.7%2C%203.8%2C%203.9-blue.svg)](https://python.org)
-
-# USE FortniteAPIAsync 0.1.6 NOT 0.1.7 !!
+[![Python version](https://img.shields.io/badge/python-3.6%2B-blue.svg)](https://python.org)
 
 # Xensis
 
-An expansive Fortnite lobby bot with a handful of features.
+An expansive Fortnite lobby bot packed with powerful features to enhance your gaming experience.
 
-> Discord server: <a href="https://discord.gg/88r2ShB" target="_blank">Xensis Bots</a>
+> Join our community: [Xensis Bots Discord](https://discord.gg/88r2ShB)
+
+---
+
+## Overview
+
+Xensis is a feature-rich Fortnite lobby bot designed to automate and elevate your in-game interactions. Whether you're switching skins, managing parties, or showcasing your style, Xensis has you covered—all with a sleek, user-friendly setup.
+
+---
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+Follow these steps to get Xensis up and running on your local machine for development, testing, or just having fun.
 
 ### Prerequisites
 
-You will need Python 3.6 or higher for this bot to run.
+- **Python 3.6+**: Ensure you have Python 3.6 or higher installed.  
+  [Download Python](https://www.python.org/downloads/release/python-370/)
 
-> <a href="https://www.python.org/downloads/release/python-370/" target="_blank">Python 3.6+</a>
+---
 
+### Installation
 
-### Installing
+Setting up Xensis is quick and easy—no separate package installation required!
 
-A step by step series of examples that tell you how to get the bot running.
+1. **Clone or Download**  
+   Grab the repository from GitHub by clicking "Clone or Download".
 
-Step 1.
+2. **Extract Files**  
+   Unzip the downloaded files to a folder on your PC.
 
-> "Clone or Download" the repository
+3. **Create an Epic Games Account**  
+   Set up a new Epic Games account dedicated to your bot.
 
+4. **Configure the Bot**  
+   Open `config.json` and fill in your bot’s details. Need help? Check the [Config Guide](https://github.com/KaosDrip/Xensis/wiki/Config-Guide).
 
-Step 2.
+5. **Launch Xensis**  
+   Double-click `START BOT.bat`—it automatically installs all required packages and starts the bot for you!
 
-> Extract the files to your PC
+6. **Enjoy!**  
+   Your bot is ready! Explore the full command list in the [Command Wiki](https://github.com/KaosDrip/Xensis/wiki/Commands).
 
+---
 
-Step 3.
+### How `START BOT.bat` Works
 
-> Run "Install Packages.bat" and wait for it to finish.
+The `START BOT.bat` script is your one-stop solution:
+- **Installs Dependencies**: Automatically updates and installs packages from `requirements.txt`.
+- **Clears the Console**: Gives you a clean slate for the bot’s output.
+- **Runs the Bot**: Launches `fortnite.py` with a single click.
 
-Step 4.
+No need for a separate "Install Packages" step—it’s all handled for you!
 
-> Create a new epic games account for the bot.
-
-Step 5.
-
-> Open "config.json" and fill out the bot's information. (<a href="https://github.com/KaosDrip/Xensis/wiki/Config-Guide" target="_blank">Guide</a>)
-
-Step 6.
-
-> Run "START BOT.bat"
-
-
-Step 7.
-
-> Enjoy the bot! For a full list of commands, check out the <a href="https://github.com/KaosDrip/Xensis/wiki/Commands" target="_blank">Command Wiki</a>
-
+---
 
 ## Deployment
 
-If it prompts for an authorization code, get the code from <a href="https://github.com/KaosDrip/Xensis/wiki/Authorization-Code" target="_blank">here</a>
+- **Authorization Code**: If prompted, get your code from the [Authorization Code Guide](https://github.com/KaosDrip/Xensis/wiki/Authorization-Code).
+- **Troubleshooting**: Run into issues? Join our [Discord Server](https://discord.gg/88r2ShB) or check the [FAQ](https://github.com/KaosDrip/Xensis/wiki/FAQ).
 
-If you have any other issues / questions, feel free to join our <a href="https://discord.gg/88r2ShB" target="_blank">Discord server</a> or check out the <a href="https://github.com/KaosDrip/Xensis/wiki/FAQ" target="_blank">FAQ</a>
+---
+
+## Features
+
+- **Dynamic Skin Switching**: Change your bot’s in-game look on the fly.
+- **Party Management**: Invite, kick, or promote players with ease.
+- **Live Patch Updates**: Always shows the current Fortnite patch via the Fortnite API.
+- **Admin Controls**: Secure commands for trusted users.
+
+For a full list, see the [Command Wiki](https://github.com/KaosDrip/Xensis/wiki/Commands).
+
+---
 
 ## Acknowledgments
 
-* <a href="https://fortnitepy.readthedocs.io/en/latest/intro.html" target="_blank">fortnitepy</a>
+- **[rebootpy](https://github.com/rebootpy/rebootpy)**: The backbone of Xensis, powering Fortnite interactions.  
+  Check the [rebootpy Docs](https://rebootpy.readthedocs.io/en/latest/intro.html) for more details.
+- **Community**: Thanks to everyone in the [Xensis Bots Discord](https://discord.gg/88r2ShB) for feedback and support!
+
+---
+
+## Contributing
+
+Love Xensis? Want to make it better? Fork the repo, submit a pull request, or share your ideas on [Discord](https://discord.gg/88r2ShB).
+
+---
+
+## License
+
+This project is open-source and free to use. See the [LICENSE](LICENSE) file for details.
+
+---
+
+*Created by [KaosDrip](https://github.com/KaosDrip) – Bringing Fortnite bots to life since 2023.*
