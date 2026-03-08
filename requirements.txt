@@ -1,4 +1,4 @@
-rebootpy
+rebootpy==0.9.7
 aiohttp
 aioconsole
 colorama
