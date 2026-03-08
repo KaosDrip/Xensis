@@ -2,6 +2,6 @@ rebootpy
 aiohttp
 aioconsole
 colorama
-FortniteAPIAsync==0.1.6
+FortniteAPIAsync==2.0.1
 requests
 pytz
