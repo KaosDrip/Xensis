@@ -141,7 +141,8 @@ client = commands.Bot(
         email=data['email'],
         password=data['password'],
         prompt_authorization_code=True,
-        delete_existing_device_auths=True,
+        prompt_code_if_invalid=True,
+        delete_existing_device_auths=False,
         **device_auth_details
     ),
     status=data['status'],
@@ -157,7 +158,12 @@ async def event_device_auth_generate(details):
 async def event_ready():
     os.system('cls||clear')
     print(intro)
+
     print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Client ready as ' + Fore.LIGHTGREEN_EX + f'{client.user.display_name}')
+
+    # SET STATUS FROM CONFIG
+    #if data['status'] != "":
+    #await client.set_presence(status=data['status'])
 
     member = client.party.me
 
@@ -943,30 +949,39 @@ copied_player = ""
 @client.command()
 async def stop(ctx):
     global copied_player
-    if copied_player != "":
-        copied_player = ""
-        await ctx.send(f'Stopped copying all users.')
-        return
-    else:
-        try:
-            await client.party.me.clear_emote()
-        except RuntimeWarning:
-            pass
+
+    copied_player = None
+
+    try:
+        await client.party.me.clear_emote()
+    except:
+        pass
+
+    await ctx.send("Stopped copying.")
 
 
 @commands.dm_only()
 @client.command()
-async def copy(ctx, *, username = None):
+async def copy(ctx, *, username: str = None):
     global copied_player
 
-    if username is None:
-        member = [m for m in client.party.members if m.id == ctx.author.id][0]
+    try:
 
-    else:
-        user = await client.fetch_user(username)
-        member = [m for m in client.party.members if m.id == user.id][0]
+        # If no username given, copy the command sender
+        if username is None:
+            member = client.party.get_member(ctx.author.id)
 
-    await client.party.me.edit_and_keep(
+        else:
+            user = await client.fetch_profile(username)
+            member = client.party.get_member(user.id)
+
+        if member is None:
+            await ctx.send("That player is not in the party.")
+            return
+
+        copied_player = member
+
+        await client.party.me.edit_and_keep(
             partial(
                 rebootpy.ClientPartyMember.set_outfit,
                 asset=member.outfit,
@@ -999,7 +1014,11 @@ async def copy(ctx, *, username = None):
             )
         )
 
-    await ctx.send(f"Now copying: {member.display_name}")
+        await ctx.send(f"Now copying: {member.display_name}")
+
+    except Exception as e:
+        await ctx.send("Failed to copy that player.")
+        print(f"Copy error: {e}")
 
 @client.event()
 async def event_party_member_backpack_change(member, before, after):
@@ -1236,10 +1255,14 @@ async def match(ctx, players = None):
 @commands.dm_only()
 @client.command()
 @is_admin()
-async def status(ctx, *, status = None):
-    await client.set_presence(status) 
-    await ctx.send(f'Status set to {status}')
-    await ctx.send(f'No status was given. Try: {prefix}status (status message)')
+async def status(ctx, *, status=None):
+
+    if status is None:
+        await ctx.send(f'Usage: {prefix}status (message)')
+        return
+
+    await client.set_presence(status=status)
+    await ctx.send(f'Status set to: {status}')
 
 
 @commands.dm_only()
@@ -1517,7 +1540,7 @@ async def members(ctx: rebootpy.ext.commands.Context):
 @commands.dm_only()
 @client.command()
 async def invisible(ctx: rebootpy.ext.commands.Context):
-    await client.party.me.set_outfit("CID_Invisible")
+    await client.party.me.set_outfit(asset="CID_Invisible")
     await ctx.send("I am now invisible.")
 
 
