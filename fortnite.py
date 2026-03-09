@@ -66,6 +66,8 @@ def lenPartyMembers():
 def warn(*args, **kwargs):
     pass
 import warnings
+
+from rebootpy import ClientParty
 warnings.warn = warn
 
 def lenFriends():
@@ -148,7 +150,6 @@ client = commands.Bot(
     status=data['status'],
     platform=rebootpy.Platform(data['platform']),
 )
-client.party_build_id = "1:3:" # Fix for error code 91 and 93
 
 @client.event
 async def event_device_auth_generate(details):
@@ -158,19 +159,29 @@ async def event_device_auth_generate(details):
 async def event_ready():
     os.system('cls||clear')
     print(intro)
-
     print(Fore.GREEN + ' [+] ' + Fore.RESET + 'Client ready as ' + Fore.LIGHTGREEN_EX + f'{client.user.display_name}')
 
-    # SET STATUS FROM CONFIG
-    #if data['status'] != "":
-    #await client.set_presence(status=data['status'])
+    try:
+        client.set_presence(data['status'])  # Remove await, as method is sync
+        print(Fore.GREEN + ' [+] ' + Fore.RESET + f'Status set to: {data["status"]}')
+    except Exception as e:
+        print(Fore.YELLOW + ' [!] ' + Fore.RESET + f'Failed to set initial status: {e}')
+        # Retry once after 5s
+        await asyncio.sleep(5)
+        try:
+            client.set_presence(data['status'])  # Remove await here too
+        except:
+            pass
 
     member = client.party.me
-
     await member.edit_and_keep(
         partial(
             rebootpy.ClientPartyMember.set_outfit,
             asset=data['cid']
+        ),
+        partial(
+            rebootpy.ClientPartyMember.set_emote,
+            asset=data['eid']
         ),
         partial(
             rebootpy.ClientPartyMember.set_backpack,
@@ -972,7 +983,7 @@ async def copy(ctx, *, username: str = None):
             member = client.party.get_member(ctx.author.id)
 
         else:
-            user = await client.fetch_profile(username)
+            user = await client.fetch_user(username)
             member = client.party.get_member(user.id)
 
         if member is None:
@@ -1113,10 +1124,10 @@ async def hide(ctx, *, user = None):
         if user != "all":
             try:
                 if user is None:
-                    user = await client.fetch_profile(ctx.message.author.id)
+                    user = await client.fetch_user(ctx.message.author.id)
                     member = client.party.members.get(user.id)
                 else:
-                    user = await client.fetch_profile(user)
+                    user = await client.fetch_user(user)
                     member = client.party.members.get(user.id)
 
                 raw_squad_assignments = client.party.meta.get_prop('Default:RawSquadAssignments_j')["RawSquadAssignments"]
@@ -1189,7 +1200,7 @@ async def say(ctx, *, message = None):
 async def whisper(ctx, member = None, *, message = None):
     if (member is not None) and (message is not None):
         try:
-            user = await client.fetch_profile(member)
+            user = await client.fetch_user(member)
             friend = client.get_friend(user.id)
 
             if friend.is_online():
@@ -1343,10 +1354,10 @@ async def privacy(ctx, setting = None):
 async def join(ctx, *, member = None):
     try:
         if member is None:
-            user = await client.fetch_profile(ctx.message.author.id)
+            user = await client.fetch_user(ctx.message.author.id)
             friend = client.get_friend(user.id)
         elif member is not None:
-            user = await client.fetch_profile(member)
+            user = await client.fetch_user(member)
             friend = client.get_friend(user.id)
 
         await friend.join_party()
@@ -1385,10 +1396,10 @@ async def invite(ctx, *, member = None):
     else:
         try:
             if member is None:
-                user = await client.fetch_profile(ctx.message.author.id)
+                user = await client.fetch_user(ctx.message.author.id)
                 friend = client.get_friend(user.id)
             if member is not None:
-                user = await client.fetch_profile(member)
+                user = await client.fetch_user(member)
                 friend = client.get_friend(user.id)
 
             await friend.invite()
@@ -1409,7 +1420,7 @@ async def invite(ctx, *, member = None):
 async def add(ctx, *, member = None):
     if member is not None:
         try:
-            user = await client.fetch_profile(member)
+            user = await client.fetch_user(member)
             friends = client.friends
 
             if user.id in friends:
@@ -1433,7 +1444,7 @@ async def add(ctx, *, member = None):
 async def block(ctx, *, user = None):
     if user is not None:
         try:
-            user = await client.fetch_profile(user)
+            user = await client.fetch_user(user)
             friends = client.friends
 
             if user.id in friends:
@@ -1474,7 +1485,7 @@ async def blocked(ctx):
 async def unblock(ctx, *, user = None):
     if user is not None:
         try:
-            member = await client.fetch_profile(user)
+            member = await client.fetch_user(user)
             blocked = client.blocked_users
             if member.id in blocked:
                 try:
@@ -1549,10 +1560,10 @@ async def invisible(ctx: rebootpy.ext.commands.Context):
 @is_admin()
 async def id(ctx, *, user = None):
     if user is not None:
-        user = await client.fetch_profile(user)
+        user = await client.fetch_user(user)
 
     elif user is None:
-        user = await client.fetch_profile(ctx.message.author.id)
+        user = await client.fetch_user(ctx.message.author.id)
 
     try:
         await ctx.send(f"{user}'s Epic ID is: {user.id}")
@@ -1566,7 +1577,7 @@ async def id(ctx, *, user = None):
 @is_admin()
 async def user(ctx, *, user = None):
     if user is not None:
-        user = await client.fetch_profile(user)
+        user = await client.fetch_user(user)
 
         try:
             await ctx.send(f"The ID: {user.id} belongs to: {user.display_name}")
@@ -1584,7 +1595,7 @@ async def admin(ctx, setting = None, *, user = None):
         await ctx.send(f"Missing one or more arguments. Try: {prefix}admin (add, remove, list) (user)")
     elif (setting is not None) and (user is None):
 
-        user = await client.fetch_profile(ctx.message.author.id)
+        user = await client.fetch_user(ctx.message.author.id)
 
         if setting.lower() == 'add':
             if user.id in info['FullAccess']:
@@ -1626,7 +1637,7 @@ async def admin(ctx, setting = None, *, user = None):
                 admins = []
 
                 for admin in info['FullAccess']:
-                    user = await client.fetch_profile(admin)
+                    user = await client.fetch_user(admin)
                     admins.append(user.display_name)
 
                 await ctx.send(f"The bot has {len(admins)} admins:")
@@ -1641,7 +1652,7 @@ async def admin(ctx, setting = None, *, user = None):
             await ctx.send(f"That is not a valid setting. Try: {prefix}admin (add, remove, list) (user)")
 
     elif (setting is not None) and (user is not None):
-        user = await client.fetch_profile(user)
+        user = await client.fetch_user(user)
 
         if setting.lower() == 'add':
             if ctx.message.author.id in info['FullAccess']:
